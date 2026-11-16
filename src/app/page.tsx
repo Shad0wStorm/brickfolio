@@ -1,69 +1,317 @@
-import Image from "next/image";
+
+"use client";
+
+import { useMemo, useState } from "react";
+import {
+  ArrowRight,
+  Blocks,
+  BookOpen,
+  ChevronRight,
+  Clock3,
+  Compass,
+  Hammer,
+  Layers3,
+  Search,
+  Sparkles,
+} from "lucide-react";
+
+const builds = [
+  {
+    title: "Frosthold Keep",
+    category: "Medieval",
+    difficulty: "Intermediate",
+    time: "3–5 hours",
+    size: "Large",
+    description: "A fortress overlooking the frozen wilderness.",
+    colour: "ice",
+    materials: "Stone · Spruce · Deepslate",
+  },
+  {
+    title: "Woodland Retreat",
+    category: "Starter",
+    difficulty: "Beginner",
+    time: "45–60 mins",
+    size: "Small",
+    description: "A cosy starter home tucked into the forest.",
+    colour: "forest",
+    materials: "Oak · Spruce · Cobblestone",
+  },
+  {
+    title: "Cliffside Farm",
+    category: "Survival",
+    difficulty: "Intermediate",
+    time: "1–2 hours",
+    size: "Medium",
+    description: "A practical farm built into the mountainside.",
+    colour: "farm",
+    materials: "Oak · Stone · Glass",
+  },
+  {
+    title: "Emberwatch Tower",
+    category: "Fantasy",
+    difficulty: "Advanced",
+    time: "2–4 hours",
+    size: "Medium",
+    description: "A watchtower with a little magical character.",
+    colour: "ember",
+    materials: "Deepslate · Stone Brick · Spruce",
+  },
+];
+
+const categories = ["All builds", "Medieval", "Starter", "Survival", "Fantasy"];
+
+function BuildArtwork({ colour }: { colour: string }) {
+  return (
+    <div className={`artwork artwork-${colour}`}>
+      <div className="artwork-glow" />
+      <div className="artwork-scene">
+        <div className="art-block art-block-back" />
+        <div className="art-block art-block-left" />
+        <div className="art-block art-block-right" />
+        <div className="art-block art-block-centre" />
+        <div className="art-block art-block-top" />
+        <div className="art-block art-block-detail" />
+        <div className="art-ground" />
+      </div>
+      <div className="artwork-label">
+        <Blocks size={14} />
+        BUILD PREVIEW
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
+  const [activeCategory, setActiveCategory] = useState("All builds");
+  const [search, setSearch] = useState("");
+
+  const filteredBuilds = useMemo(() => {
+    return builds.filter((build) => {
+      const matchesCategory =
+        activeCategory === "All builds" ||
+        build.category === activeCategory;
+
+      const matchesSearch =
+        `${build.title} ${build.category} ${build.description}`
+          .toLowerCase()
+          .includes(search.toLowerCase());
+
+      return matchesCategory && matchesSearch;
+    });
+  }, [activeCategory, search]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <main className="min-h-screen bg-[#101713] text-[#f4f0e7]">
+      <header className="site-header">
+        <a href="#" className="brand">
+          <div className="brand-mark">
+            <Blocks size={25} strokeWidth={1.8} />
+          </div>
+          <span>brick<span className="brand-highlight">folio</span></span>
+        </a>
+
+        <nav className="desktop-nav">
+          <a href="#build-library">Explore builds</a>
+          <a href="#how-it-works">How it works</a>
+          <a href="#about">About</a>
+        </nav>
+
+        <a href="#build-library" className="header-button">
+          Explore library <ArrowRight size={15} />
+        </a>
+      </header>
+
+      <section className="hero">
+        <div className="hero-content">
+          <div className="eyebrow">
+            <Sparkles size={14} />
+            YOUR NEXT BUILD STARTS HERE
+          </div>
+
+          <h1>
+            Big ideas.
+            <br />
+            <span>One block</span> at a time.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+
+          <p className="hero-description">
+            Discover incredible builds, follow clear step-by-step
+            guides and bring your block-built world to life.
+          </p>
+
+          <div className="hero-actions">
+            <a href="#build-library" className="primary-button">
+              Explore builds <ArrowRight size={17} />
+            </a>
+            <a href="#how-it-works" className="secondary-button">
+              How it works
+            </a>
+          </div>
+
+          <div className="hero-note">
+            <span className="status-dot" />
+            Made for builders. Built for creativity.
+          </div>
+        </div>
+
+        <div className="hero-visual">
+          <div className="hero-visual-glow" />
+          <div className="hero-build">
+            <div className="hero-build-sky" />
+            <div className="hero-mountain mountain-one" />
+            <div className="hero-mountain mountain-two" />
+            <div className="hero-castle">
+              <div className="castle-tower tower-left" />
+              <div className="castle-tower tower-right" />
+              <div className="castle-wall" />
+              <div className="castle-gate" />
+              <div className="castle-flag">✦</div>
+            </div>
+            <div className="hero-build-ground" />
+          </div>
+
+          <div className="floating-card">
+            <div className="floating-icon">
+              <Layers3 size={19} />
+            </div>
+            <div>
+              <strong>Build it your way</strong>
+              <span>One step at a time</span>
+            </div>
+          </div>
+
+          <div className="hero-caption">IMAGINE · PLAN · BUILD</div>
+        </div>
+      </section>
+
+      <section className="feature-strip" id="how-it-works">
+        <div className="feature-item">
+          <Compass size={22} />
+          <div>
+            <strong>Find inspiration</strong>
+            <span>Discover your next project</span>
+          </div>
+        </div>
+        <div className="feature-item">
+          <BookOpen size={22} />
+          <div>
+            <strong>Follow the guide</strong>
+            <span>Clear, step-by-step instructions</span>
+          </div>
+        </div>
+        <div className="feature-item">
+          <Hammer size={22} />
+          <div>
+            <strong>Bring it to life</strong>
+            <span>Build at your own pace</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="library-section" id="build-library">
+        <div className="section-heading">
+          <div>
+            <div className="section-kicker">THE BUILD LIBRARY</div>
+            <h2>Find your next great build.</h2>
+            <p>From simple starter homes to ambitious creations.</p>
+          </div>
+          <span className="library-count">
+            {filteredBuilds.length} BUILDS
+          </span>
+        </div>
+
+        <div className="library-controls">
+          <div className="category-list">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`category-button ${
+                  activeCategory === category ? "active" : ""
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+
+          <label className="search-box">
+            <Search size={17} />
+            <input
+              type="search"
+              placeholder="Search builds..."
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </label>
+        </div>
+
+        {filteredBuilds.length > 0 ? (
+          <div className="build-grid">
+            {filteredBuilds.map((build) => (
+              <article className="build-card" key={build.title}>
+                <BuildArtwork colour={build.colour} />
+                <div className="build-card-content">
+                  <div className="build-card-meta">
+                    <span>{build.category}</span>
+                    <span>{build.size} build</span>
+                  </div>
+                  <h3>{build.title}</h3>
+                  <p>{build.description}</p>
+                  <div className="build-card-footer">
+                    <span><Clock3 size={14} /> {build.time}</span>
+                    <span>{build.difficulty}</span>
+                  </div>
+                  <div className="build-materials">
+                    {build.materials}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state">
+            <Blocks size={30} />
+            <h3>No builds found</h3>
+            <p>Try another search or choose a different category.</p>
+            <button
+              onClick={() => {
+                setSearch("");
+                setActiveCategory("All builds");
+              }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              Clear filters
+            </button>
+          </div>
+        )}
+      </section>
+
+      <section className="community-section" id="about">
+        <div className="community-icon">
+          <Blocks size={27} />
+        </div>
+        <div>
+          <div className="section-kicker">BUILT TOGETHER</div>
+          <h2>A world of creativity, open to everyone.</h2>
+          <p>
+            Brickfolio is a community-supported project.
+            Our essential building guides and tools should
+            always remain accessible to everyone.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        <a href="#build-library" className="community-link">
+          Start exploring <ChevronRight size={18} />
+        </a>
+      </section>
+
+      <footer className="site-footer">
+        <a href="#" className="footer-brand">
+          <Blocks size={19} />
+          brickfolio
+        </a>
+        <span>Your world. One block at a time.</span>
+        <span>Independent community project · Not affiliated with Mojang or Microsoft.</span>
+      </footer>
+    </main>
   );
 }
