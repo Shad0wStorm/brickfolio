@@ -1,85 +1,25 @@
-
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import {
   ArrowRight,
   Blocks,
   BookOpen,
   ChevronRight,
-  Clock3,
   Compass,
   Hammer,
   Layers3,
   Search,
   Sparkles,
 } from "lucide-react";
+import { builds } from "../../lib/builds";
+import BuildCard from "../../components/build-card";
 
-const builds = [
-  {
-    title: "Frosthold Keep",
-    category: "Medieval",
-    difficulty: "Intermediate",
-    time: "3–5 hours",
-    size: "Large",
-    description: "A fortress overlooking the frozen wilderness.",
-    colour: "ice",
-    materials: "Stone · Spruce · Deepslate",
-  },
-  {
-    title: "Woodland Retreat",
-    category: "Starter",
-    difficulty: "Beginner",
-    time: "45–60 mins",
-    size: "Small",
-    description: "A cosy starter home tucked into the forest.",
-    colour: "forest",
-    materials: "Oak · Spruce · Cobblestone",
-  },
-  {
-    title: "Cliffside Farm",
-    category: "Survival",
-    difficulty: "Intermediate",
-    time: "1–2 hours",
-    size: "Medium",
-    description: "A practical farm built into the mountainside.",
-    colour: "farm",
-    materials: "Oak · Stone · Glass",
-  },
-  {
-    title: "Emberwatch Tower",
-    category: "Fantasy",
-    difficulty: "Advanced",
-    time: "2–4 hours",
-    size: "Medium",
-    description: "A watchtower with a little magical character.",
-    colour: "ember",
-    materials: "Deepslate · Stone Brick · Spruce",
-  },
+const categories = [
+  "All builds",
+  ...Array.from(new Set(builds.map((build) => build.category))).sort(),
 ];
-
-const categories = ["All builds", "Medieval", "Starter", "Survival", "Fantasy"];
-
-function BuildArtwork({ colour }: { colour: string }) {
-  return (
-    <div className={`artwork artwork-${colour}`}>
-      <div className="artwork-glow" />
-      <div className="artwork-scene">
-        <div className="art-block art-block-back" />
-        <div className="art-block art-block-left" />
-        <div className="art-block art-block-right" />
-        <div className="art-block art-block-centre" />
-        <div className="art-block art-block-top" />
-        <div className="art-block art-block-detail" />
-        <div className="art-ground" />
-      </div>
-      <div className="artwork-label">
-        <Blocks size={14} />
-        BUILD PREVIEW
-      </div>
-    </div>
-  );
-}
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("All builds");
@@ -91,10 +31,19 @@ export default function Home() {
         activeCategory === "All builds" ||
         build.category === activeCategory;
 
-      const matchesSearch =
-        `${build.title} ${build.category} ${build.description}`
-          .toLowerCase()
-          .includes(search.toLowerCase());
+        const searchableContent = [
+          build.title,
+          build.description,
+          build.category,
+          build.difficulty,
+          ...build.materials.map((material) => material.block),
+        ]
+        .join(" ")
+        .toLowerCase();
+
+      const matchesSearch = searchableContent.includes(
+        search.trim().toLowerCase()
+      );
 
       return matchesCategory && matchesSearch;
     });
@@ -111,12 +60,12 @@ export default function Home() {
         </a>
 
         <nav className="desktop-nav">
-          <a href="#build-library">Explore builds</a>
+          <a href="/builds">Explore builds</a>
           <a href="#how-it-works">How it works</a>
           <a href="#about">About</a>
         </nav>
 
-        <a href="#build-library" className="header-button">
+        <a href="/builds" className="header-button">
           Explore library <ArrowRight size={15} />
         </a>
       </header>
@@ -249,24 +198,7 @@ export default function Home() {
         {filteredBuilds.length > 0 ? (
           <div className="build-grid">
             {filteredBuilds.map((build) => (
-              <article className="build-card" key={build.title}>
-                <BuildArtwork colour={build.colour} />
-                <div className="build-card-content">
-                  <div className="build-card-meta">
-                    <span>{build.category}</span>
-                    <span>{build.size} build</span>
-                  </div>
-                  <h3>{build.title}</h3>
-                  <p>{build.description}</p>
-                  <div className="build-card-footer">
-                    <span><Clock3 size={14} /> {build.time}</span>
-                    <span>{build.difficulty}</span>
-                  </div>
-                  <div className="build-materials">
-                    {build.materials}
-                  </div>
-                </div>
-              </article>
+              <BuildCard key={build.id} build={build} />
             ))}
           </div>
         ) : (
